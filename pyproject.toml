@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "acan-studio"
-version = "1.2.0"
+version = "1.2.1"
 description = "An open-source desktop media workspace for video creators."
 readme = "README.md"
 requires-python = ">=3.11"

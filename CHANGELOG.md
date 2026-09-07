@@ -6,7 +6,23 @@ add creator-facing capabilities, and major releases may change workflows.
 
 ## [Unreleased]
 
-Further changes after 1.2.0 will be recorded here.
+Further changes after 1.2.1 will be recorded here.
+
+## [1.2.1] — 2026-09-07
+
+### Fixed
+
+- Include and explicitly load CA certificates for HTTPS short-link resolution
+  and Weibo link checks in frozen apps; keep certificate and hostname checks enabled.
+- Recognize Douyin's exact `Fresh cookies (not necessarily logged in)` failure.
+  Explain that HTTP 403 may persist even with browser cookies and is not proof of missing login.
+- Log the running app version and loaded CA count; add `--check-https URL` for
+  diagnosing packaged HTTPS without opening a window.
+
+### Known limitations
+
+- The reported Douyin video still returns HTTP 403 with the current bundled
+  yt-dlp and Chrome cookies. This release fixes link resolution, not that platform refusal.
 
 ## [1.2.0] — 2026-08-31
 

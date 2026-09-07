@@ -81,6 +81,7 @@ PYINSTALLER_ARGS=(
   --clean
   --specpath "$PYINSTALLER_CONFIG_DIR"
   --collect-all customtkinter
+  --collect-data certifi
   --collect-all faster_whisper
   --collect-all ctranslate2
   --collect-all tokenizers

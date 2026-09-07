@@ -22,5 +22,9 @@ jobs:
           python-version: ${{ matrix.python-version }}
       - name: Compile source
         run: python -m compileall -q main.py ui_v2.py acan_studio tests
+      - name: Install test dependencies
+        run: python -m pip install -r requirements-dev.txt
       - name: Run core tests
+        env:
+          PYTHONPATH: web:.
         run: python -m unittest discover -s tests -v

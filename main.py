@@ -16,12 +16,14 @@ import tkinter as tk
 from tkinter import filedialog, messagebox
 from urllib.parse import parse_qs, urlparse
 from urllib.error import HTTPError
-from urllib.request import HTTPRedirectHandler, Request, build_opener, getproxies, urlopen
+from urllib.request import HTTPRedirectHandler, Request, getproxies
 
 import customtkinter as ctk
 from PIL import Image, ImageTk
 
 from ui_v2 import build_ui_v2
+from acan_studio import __version__
+from acan_studio.core.network import create_https_context, create_https_opener
 from acan_studio.core.downloader import (
     build_yt_dlp_download_attempts,
     build_youtube_network_args,
@@ -98,7 +100,8 @@ DOUYIN_LOGIN_ERROR_KEYWORDS = (
     "cookie",
 )
 DOUYIN_COOKIE_PARSE_ERROR_KEYWORDS = (
-    "fresh cookies are needed",
+    "fresh cookies",
+    "failed to download web detail json",
     "failed to parse json",
 )
 DOUYIN_UNSUPPORTED_ERROR_KEYWORDS = ("unsupported url",)
@@ -2627,7 +2630,7 @@ class ACANCreatorApp(ctk.CTk):
                     "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0 Safari/537.36",
                 },
             )
-            with urlopen(request, timeout=8) as response:
+            with create_https_opener().open(request, timeout=8) as response:
                 return response.geturl().strip() or url
         except Exception as exc:
             self._write_log(f"短链解析失败，继续使用原始链接：{exc}")
@@ -2645,8 +2648,9 @@ class ACANCreatorApp(ctk.CTk):
                     "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0 Safari/537.36",
                 },
             )
-            opener = build_opener(NoRedirectHandler)
-            opener.open(request, timeout=8)
+            opener = create_https_opener(NoRedirectHandler())
+            with opener.open(request, timeout=8):
+                pass
             return url
         except HTTPError as exc:
             location = exc.headers.get("Location", "").strip()
@@ -3174,6 +3178,7 @@ class ACANCreatorApp(ctk.CTk):
     def _check_required_tools_on_startup(self, show_popup=True):
         checks = []
         missing = []
+        self._write_log(f"ACAN Studio 版本：{__version__}")
 
         def add_check(ok, label, warn_message=None):
             checks.append(f"{'✓' if ok else '⚠'} {label}")
@@ -3188,6 +3193,12 @@ class ACANCreatorApp(ctk.CTk):
         transcript_engine = self._detect_transcript_engine()
         add_check(bool(transcript_engine), f"语音识别 {transcript_engine['name']}" if transcript_engine else "语音识别未安装", "语音识别未安装")
         add_check(True, "Python")
+        try:
+            certificate_count = create_https_context().cert_store_stats()["x509_ca"]
+            add_check(certificate_count > 0, f"HTTPS 信任证书已加载（{certificate_count} 个根证书）", "HTTPS 信任证书未加载")
+        except Exception as exc:
+            add_check(False, "HTTPS 信任证书加载失败", "HTTPS 信任证书加载失败")
+            self._write_log(f"HTTPS 证书检查：{exc}")
 
         try:
             self._download_root().mkdir(parents=True, exist_ok=True)
@@ -3641,5 +3652,16 @@ class ACANCreatorApp(ctk.CTk):
 
 
 if __name__ == "__main__":
+    if len(sys.argv) > 1 and sys.argv[1] == "--check-https":
+        from urllib.parse import urlsplit
+        for check_url in sys.argv[2:]:
+            if urlsplit(check_url).scheme != "https":
+                raise SystemExit("--check-https 只支持 HTTPS 链接")
+            with create_https_opener().open(check_url, timeout=15) as response:
+                final_url = urlsplit(response.geturl())
+                print(json.dumps({"version": __version__, "status": response.status,
+                                  "url": final_url.scheme + "://" + final_url.netloc + final_url.path,
+                                  "verified": True}, ensure_ascii=False))
+        raise SystemExit(0)
     app = ACANCreatorApp()
     app.mainloop()

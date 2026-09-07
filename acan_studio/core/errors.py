@@ -18,7 +18,7 @@ WEIBO_VISITOR_ERROR_KEYWORDS = (
     "login",
 )
 WEIBO_VISITOR_ERROR_MESSAGE = "微博把下载请求跳转到了登录/访客验证页。请在 Chrome 打开微博网页版，确认已登录，刷新该视频页面并能正常播放后再重试。"
-DOUYIN_COOKIE_PARSE_ERROR_KEYWORDS = ("fresh cookies are needed", "failed to parse json")
+DOUYIN_COOKIE_PARSE_ERROR_KEYWORDS = ("fresh cookies", "failed to parse json", "failed to download web detail json")
 DOUYIN_UNSUPPORTED_ERROR_KEYWORDS = ("unsupported url",)
 DOUYIN_NETWORK_ERROR_KEYWORDS = ("http error", "timeout", "connection")
 
@@ -37,6 +37,8 @@ def platform_stage_suggestion(platform_name: str, stage: str, output: str) -> st
     """Return the Chinese next-step suggestion for a failed workflow stage."""
 
     normalized_output = (output or "").lower()
+    if "certificate_verify_failed" in normalized_output:
+        return "HTTPS 证书校验失败。请使用包含信任证书的新版 ACAN Studio；如仍失败，请检查系统时间和网络代理的证书配置。"
     if platform_name == "YouTube":
         javascript_error_tokens = (
             "n challenge solving failed",
@@ -60,8 +62,11 @@ def platform_stage_suggestion(platform_name: str, stage: str, output: str) -> st
 
     if platform_name == "抖音":
         if any(token in normalized_output for token in DOUYIN_COOKIE_PARSE_ERROR_KEYWORDS):
-            message = "抖音解析失败，请按下面步骤处理：\n\n1. 运行 yt-dlp -U 更新下载器\n2. 在 Chrome 登录抖音网页版\n3. 播放任意视频 10 秒\n4. 回到 ACAN Studio 重新尝试下载"
-            return f"{message}\n抖音链接已成功识别，请稍后更新 yt-dlp 后重试，或使用备用下载方案。"
+            return ("抖音接口未返回视频数据（可能为 403 拒绝访问或会话校验失败）。"
+                    "下载器的 Fresh cookies 提示不等于未登录，即使命令带有 Cookie 也可能出现。\n"
+                    "请在设置所选浏览器中打开同一视频，完成网页提示的验证并确认能播放，"
+                    "再回到 ACAN Studio 重试；如果仍返回 403，可能需要下载器适配，重复登录不保证解决。\n"
+                    "DMG 内置下载器随 ACAN Studio 更新；更新 Homebrew 中的 yt-dlp 不会更新 App 内的版本。")
         if any(token in normalized_output for token in DOUYIN_UNSUPPORTED_ERROR_KEYWORDS):
             return "当前链接类型暂不支持，请进入视频详情页后重新复制分享链接。\n抖音链接已成功识别，请稍后更新 yt-dlp 后重试，或使用备用下载方案。"
         if any(token in normalized_output for token in DOUYIN_NETWORK_ERROR_KEYWORDS):
