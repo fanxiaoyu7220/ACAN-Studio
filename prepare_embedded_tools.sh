@@ -9,6 +9,8 @@ BUNDLE_ROOT="$PWD/.pyinstaller-cache/embedded-tools"
 YTDLP_ENTRY="$PWD/packaging/yt_dlp_entry.py"
 YTDLP_BUILD_DIR="$PWD/.pyinstaller-cache/yt-dlp-tool-build"
 YTDLP_PATCH="$PWD/patches/yt-dlp-2026.08.19-mgtv-web-player.patch"
+YTDLP_VERSION="2026.8.19"
+YTDLP_MGTV_PATCH_MARKER="ACAN_MGTV_PATCH_V2"
 WHISPER_MODEL_DIR="$PWD/.pyinstaller-cache/models/faster-whisper-base"
 TARGET_ARCH="${ACAN_TARGET_ARCH:-$(uname -m)}"
 VISION_OCR_SOURCE="$PWD/packaging/acan_vision_ocr.swift"
@@ -81,6 +83,12 @@ fi
 
 echo "正在应用芒果TV会员流兼容补丁..."
 if grep -q "f'did={did}|pno=1030" "$YTDLP_MGTV_EXTRACTOR" && \
+   ! grep -q "$YTDLP_MGTV_PATCH_MARKER" "$YTDLP_MGTV_EXTRACTOR"; then
+  echo "检测到旧版芒果TV补丁，正在恢复官方解析器后升级补丁..."
+  "$PYTHON_BIN" -m pip install --disable-pip-version-check --force-reinstall --no-deps "yt-dlp==$YTDLP_VERSION"
+fi
+
+if grep -q "$YTDLP_MGTV_PATCH_MARKER" "$YTDLP_MGTV_EXTRACTOR" && \
    grep -q "'definitionType': '2'" "$YTDLP_MGTV_EXTRACTOR" && \
    grep -q "'mgtv_access_hint':" "$YTDLP_MGTV_EXTRACTOR"; then
   echo "芒果TV兼容补丁已经应用，继续构建。"

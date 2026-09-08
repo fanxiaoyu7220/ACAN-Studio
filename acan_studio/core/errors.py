@@ -90,6 +90,13 @@ def platform_stage_suggestion(platform_name: str, stage: str, output: str) -> st
         return "手机 App 登录状态不能被电脑读取，请在 Mac 的 Chrome 中登录小红书网页版后重试。"
 
     if platform_name == "芒果TV":
+        if any(token in normalized_output for token in (
+            "geo restriction",
+            "not available from your location",
+            "code 40005",
+            "本国家/地区",
+        )):
+            return "芒果TV接口判定该视频存在地区或版权限制。请先在同一台 Mac 的浏览器中确认该播放页可以完整播放；如果网页能播放但下载仍失败，说明芒果TV网页接口暂时不兼容，请等待解析器更新。"
         if any(token in normalized_output for token in ("drm", "widevine", "protected content")):
             return "该芒果TV视频受平台版权保护。即使账号拥有 SVIP，ACAN Studio 也不能绕过此类保护，请在芒果TV官方网页或 App 内观看。"
         if "unsupported url" in normalized_output:

@@ -218,8 +218,8 @@ chmod +x build_macos_compat_dmg.sh
 完成后会同时保留两个安装包：
 
 ```text
-dist/ACAN-Studio-1.3.0-arm64.dmg
-dist/ACAN-Studio-1.3.0-x86_64.dmg
+dist/ACAN-Studio-1.3.1-arm64.dmg
+dist/ACAN-Studio-1.3.1-x86_64.dmg
 ```
 
 M1、M2、M3、M4、M5 等 Apple 芯片 Mac 下载 `arm64` 版；使用 Intel 处理器的 Mac 下载 `x86_64` 版。打开 DMG 后，把 `ACAN Studio.app` 拖到 `Applications` 文件夹即可。

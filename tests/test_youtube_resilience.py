@@ -71,6 +71,16 @@ class YouTubeResilienceTests(unittest.TestCase):
         self.assertIn("分块断点续传", suggestion)
         self.assertIn(".part", suggestion)
 
+    def test_mgtv_geo_restriction_has_specific_chinese_suggestion(self):
+        suggestion = platform_stage_suggestion(
+            "芒果TV",
+            "下载",
+            "This video is not available from your location due to geo restriction",
+        )
+
+        self.assertIn("地区或版权限制", suggestion)
+        self.assertIn("浏览器", suggestion)
+
 
 if __name__ == "__main__":
     unittest.main()

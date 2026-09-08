@@ -1,8 +1,9 @@
 --- extractor/mgtv.py
 +++ extractor/mgtv.py
-@@ -78,10 +78,22 @@
+@@ -78,10 +78,15 @@
      def _real_extract(self, url):
          video_id = self._match_id(url)
++        # ACAN_MGTV_PATCH_V2: enhanced metadata parameters can falsely trigger geo-blocking.
 +        browser_cookies = self._get_cookies('https://www.mgtv.com')
 +        did = try_call(lambda: browser_cookies['mba_deviceid'].value) or uuid.uuid4().hex
 +        cxid = try_call(lambda: browser_cookies['mba_cxid'].value) or ''
@@ -13,18 +14,10 @@
          try:
              api_data = self._download_json(
                  'https://pcweb.api.mgtv.com/player/video', video_id, query={
-+                    '_support': '10000000',
-+                    'allowedRC': '1',
-+                    'auth_mode': '1',
-+                    'cxid': cxid,
-+                    'did': did,
-+                    'entranceType': '0',
-+                    'src': 'intelmgtv',
-+                    'suuid': suuid,
                      'tk2': tk2,
                      'video_id': video_id,
                      'type': 'pch5',
-@@ -97,15 +109,17 @@
+@@ -97,15 +102,17 @@
          stream_data = self._download_json(
 -            'https://tinker.glb.mgtv.com/player/getSource', video_id, query={
 +            'https://pcweb.api.mgtv.com/player/getSource', video_id, query={
@@ -49,7 +42,7 @@
 +                'vf': 'h264',
              }, headers=self.geo_verification_headers())['data']
          stream_domain = traverse_obj(stream_data, ('stream_domain', ..., {url_or_none}), get_all=False)
-@@ -142,6 +156,10 @@
+@@ -142,6 +149,10 @@
          return {
              'id': video_id,
              'formats': formats,
