@@ -6,7 +6,15 @@ add creator-facing capabilities, and major releases may change workflows.
 
 ## [Unreleased]
 
-Further changes after 1.2.1 will be recorded here.
+Further changes after 1.3.0 will be recorded here.
+
+## [1.3.0] — 2026-09-08
+
+### Added
+
+- Add an MP3-to-WAV action that writes broadly compatible 16-bit PCM audio,
+  preserves the source sample rate and channel layout, and avoids overwriting
+  existing files in the Audio library.
 
 ## [1.2.1] — 2026-09-07
 
@@ -56,6 +64,8 @@ Further changes after 1.2.1 will be recorded here.
 - Added resilient YouTube transport fallbacks and Apple Silicon/Intel macOS
   compatibility packaging.
 
-[Unreleased]: https://github.com/fanxiaoyu7220/ACAN-Studio/compare/v1.2.0...HEAD
+[Unreleased]: https://github.com/fanxiaoyu7220/ACAN-Studio/compare/v1.3.0...HEAD
+[1.3.0]: https://github.com/fanxiaoyu7220/ACAN-Studio/releases/tag/v1.3.0
+[1.2.1]: https://github.com/fanxiaoyu7220/ACAN-Studio/releases/tag/v1.2.1
 [1.2.0]: https://github.com/fanxiaoyu7220/ACAN-Studio/releases/tag/v1.2.0
 [1.1.8]: https://github.com/fanxiaoyu7220/ACAN-Studio/releases/tag/v1.1.8

@@ -238,21 +238,23 @@ def _build_actions_card(app):
     app.mp3_button = _button(app.button_frame, "提取 MP3", app.extract_mp3, height=46)
     app.mp3_button.grid(row=2, column=2, sticky="ew", padx=(8, 20), pady=7)
 
+    app.mp3_to_wav_button = _button(app.button_frame, "MP3 转 WAV", app.convert_mp3_to_wav, height=46)
+    app.mp3_to_wav_button.grid(row=3, column=0, sticky="ew", padx=(20, 8), pady=7)
     app.compress_video_button = _button(app.button_frame, "压缩视频", app.compress_video, height=46)
-    app.compress_video_button.grid(row=3, column=0, sticky="ew", padx=(20, 8), pady=7)
+    app.compress_video_button.grid(row=3, column=1, sticky="ew", padx=8, pady=7)
     app.library_button = _button(app.button_frame, "打开素材库", app.open_library, height=46)
-    app.library_button.grid(row=3, column=1, sticky="ew", padx=8, pady=7)
+    app.library_button.grid(row=3, column=2, sticky="ew", padx=(8, 20), pady=7)
     app.action_check_tools_button = _button(app.button_frame, "环境检测", app.check_backend_tools, height=46)
-    app.action_check_tools_button.grid(row=3, column=2, sticky="ew", padx=(8, 20), pady=7)
+    app.action_check_tools_button.grid(row=4, column=0, columnspan=3, sticky="ew", padx=20, pady=7)
 
     app.action_enhance_video_button = _button(app.button_frame, "修复画质4K\n选择本地视频，增强清晰度并导出", app.enhance_video_4k, height=58)
-    app.action_enhance_video_button.grid(row=4, column=0, columnspan=3, sticky="ew", padx=20, pady=7)
+    app.action_enhance_video_button.grid(row=5, column=0, columnspan=3, sticky="ew", padx=20, pady=7)
 
     app.full_shortcut_button = _task_button(app, "下载 + 修复 + 字幕 + OCR + 音频转文字", "下载 + 修复 + 字幕 + OCR + 音频转文字")
-    app.full_shortcut_button.grid(row=5, column=0, columnspan=3, sticky="ew", padx=20, pady=(8, 18))
+    app.full_shortcut_button.grid(row=6, column=0, columnspan=3, sticky="ew", padx=20, pady=(8, 18))
 
     app.local_transcript_button = _button(app.button_frame, "选择本地视频音频转文字", app.transcribe_local_video, height=46)
-    app.local_transcript_button.grid(row=6, column=0, columnspan=3, sticky="ew", padx=20, pady=(0, 20))
+    app.local_transcript_button.grid(row=7, column=0, columnspan=3, sticky="ew", padx=20, pady=(0, 20))
 
 
 def _build_settings_card(app):

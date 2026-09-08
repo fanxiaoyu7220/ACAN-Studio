@@ -3,6 +3,7 @@
 from .downloader import build_yt_dlp_download_attempts
 from .errors import platform_stage_suggestion
 from .media import (
+    build_mp3_to_wav_command,
     calculate_target_bitrates,
     classify_content_type,
     detect_platform,
@@ -17,6 +18,7 @@ from .media import (
 )
 
 __all__ = [
+    "build_mp3_to_wav_command",
     "build_yt_dlp_download_attempts",
     "calculate_target_bitrates",
     "classify_content_type",

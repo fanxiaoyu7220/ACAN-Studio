@@ -111,6 +111,27 @@ def calculate_target_bitrates(
     return max(video_bitrate_kbps, 100), audio_bitrate_kbps
 
 
+def build_mp3_to_wav_command(ffmpeg_path, input_path, output_path) -> list[str]:
+    """Build a broadly compatible, uncompressed PCM WAV conversion command.
+
+    The source sample rate and channel layout are intentionally preserved while
+    the decoded audio is written as signed 16-bit little-endian PCM.
+    """
+
+    return [
+        str(ffmpeg_path),
+        "-y",
+        "-i",
+        str(input_path),
+        "-map",
+        "0:a:0",
+        "-vn",
+        "-c:a",
+        "pcm_s16le",
+        str(output_path),
+    ]
+
+
 def format_duration(seconds: float) -> str:
     """Format seconds for the Chinese desktop UI."""
 

@@ -31,6 +31,7 @@ from acan_studio.core.downloader import (
 )
 from acan_studio.core.errors import platform_stage_suggestion
 from acan_studio.core.media import (
+    build_mp3_to_wav_command,
     calculate_target_bitrates,
     classify_content_type,
     detect_platform,
@@ -1760,6 +1761,36 @@ class ACANCreatorApp(ctk.CTk):
             title="正在提取MP3",
             command=command,
             done_message=f"MP3 已生成：{output_path}",
+            open_path=output_path,
+            required_tools=["ffmpeg"],
+        )
+
+    def convert_mp3_to_wav(self):
+        file_path = filedialog.askopenfilename(
+            title="请选择一个 MP3 音频文件",
+            filetypes=[
+                ("MP3 音频", "*.mp3"),
+                ("所有文件", "*.*"),
+            ],
+        )
+
+        if not file_path:
+            return
+
+        input_path = Path(file_path)
+        if input_path.suffix.lower() != ".mp3":
+            message = "请选择扩展名为 .mp3 的音频文件。"
+            self._write_log(message)
+            self._show_error(message)
+            return
+
+        output_path = self._unique_audio_path(input_path.stem, ".wav")
+        command = build_mp3_to_wav_command("ffmpeg", input_path, output_path)
+
+        self._run_task(
+            title="正在转换 MP3 为 WAV",
+            command=command,
+            done_message=f"WAV 已生成：{output_path}",
             open_path=output_path,
             required_tools=["ffmpeg"],
         )
@@ -3603,15 +3634,16 @@ class ACANCreatorApp(ctk.CTk):
 
         return output_path
 
-    def _unique_audio_path(self, stem):
+    def _unique_audio_path(self, stem, suffix=".mp3"):
         safe_stem = stem.strip() or "音频"
+        normalized_suffix = suffix if suffix.startswith(".") else f".{suffix}"
         audio_dir = self._download_root() / "Audio"
         audio_dir.mkdir(parents=True, exist_ok=True)
-        output_path = audio_dir / f"{safe_stem}.mp3"
+        output_path = audio_dir / f"{safe_stem}{normalized_suffix}"
         index = 2
 
         while output_path.exists():
-            output_path = audio_dir / f"{safe_stem} {index}.mp3"
+            output_path = audio_dir / f"{safe_stem} {index}{normalized_suffix}"
             index += 1
 
         return output_path

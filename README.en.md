@@ -4,7 +4,7 @@
 
 ACAN Studio is a macOS-first desktop app for creators who need one place to download, repair, convert, transcribe, and organize media. It combines a CustomTkinter GUI with `yt-dlp`, FFmpeg, and optional OCR/Whisper components.
 
-The project is in active development on the 1.2.x line. The source app is usable today; the current work focuses on a testable core, predictable releases, and contributor-friendly maintenance.
+The project is in active development on the 1.3.x line. The source app is usable today; the current work focuses on reliable creator workflows, predictable releases, and contributor-friendly maintenance.
 
 Chinese documentation: [README.md](README.md)
 
@@ -13,7 +13,7 @@ Chinese documentation: [README.md](README.md)
 - Download media from supported public URLs and pasted sharing text
 - Detect common platforms and content types before downloading
 - Repair downloaded files into broadly compatible H.264/AAC MP4 files
-- Convert local video/audio files and extract MP3 audio
+- Convert local video/audio files, extract MP3 audio, and convert MP3 to 16-bit PCM WAV
 - Extract available subtitles as SRT and TXT
 - Run optional OCR on video frames
 - Transcribe local media with Whisper/faster-whisper when installed

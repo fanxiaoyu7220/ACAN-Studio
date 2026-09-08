@@ -2,9 +2,9 @@
 
 > Open-source desktop media workspace for video creators.
 
-ACAN Studio 是一个给视频创作者使用的 macOS 图形界面素材工作台，当前版本线为 **1.2.x**。它使用 Python 3 + CustomTkinter，后端调用 yt-dlp、FFmpeg 和可选的 OCR/Whisper 组件；既可以直接运行源码，也可以用 PyInstaller 打包成 `.app`。
+ACAN Studio 是一个给视频创作者使用的 macOS 图形界面素材工作台，当前版本线为 **1.3.x**。它使用 Python 3 + CustomTkinter，后端调用 yt-dlp、FFmpeg 和可选的 OCR/Whisper 组件；既可以直接运行源码，也可以用 PyInstaller 打包成 `.app`。
 
-项目当前处于持续开发阶段：下载、转码、字幕、OCR、音频转文字和素材整理已经可用，1.2.x 正在补齐可测试的核心层、贡献规范和发布流程。
+项目当前处于持续开发阶段：下载、转码、音频格式转换、字幕、OCR、音频转文字和素材整理已经可用，1.3.x 正在继续改善创作者工作流。
 
 English: [README.en.md](README.en.md)
 
@@ -50,6 +50,7 @@ English: [README.en.md](README.en.md)
 - 设置页：可设置下载目录、浏览器 Cookie、导入 Cookies.txt
 - 启动时显示环境检查：yt-dlp、ffmpeg、OCR 引擎、Python、下载目录、浏览器、Cookie 状态
 - 提取MP3：选择本地视频文件，后台调用 `ffmpeg`
+- MP3 转 WAV：选择本地 MP3，转换为兼容性良好的 16-bit PCM WAV，并保留原采样率和声道
 - 打开素材库：一键打开 `~/Movies/Creator/`
 - 日志窗口：显示执行状态、错误信息和完成路径，可一键复制日志
 - 可一键复制下载命令，方便在终端中调试
@@ -105,7 +106,7 @@ Creator/
 - OCR文本：各平台目录下的 `OCR_Text/video_ocr_text.txt`
 - 音频转文字：各平台目录下的 `Transcript/`
 - 其他平台：`~/Movies/Creator/Other/`
-- MP3音频：`~/Movies/Creator/Audio/`
+- MP3/WAV 音频：`~/Movies/Creator/Audio/`
 - 素材库：`~/Movies/Creator/`
 
 ## 需要提前安装
@@ -217,8 +218,8 @@ chmod +x build_macos_compat_dmg.sh
 完成后会同时保留两个安装包：
 
 ```text
-dist/ACAN-Studio-1.2.0-arm64.dmg
-dist/ACAN-Studio-1.2.0-x86_64.dmg
+dist/ACAN-Studio-1.3.0-arm64.dmg
+dist/ACAN-Studio-1.3.0-x86_64.dmg
 ```
 
 M1、M2、M3、M4、M5 等 Apple 芯片 Mac 下载 `arm64` 版；使用 Intel 处理器的 Mac 下载 `x86_64` 版。打开 DMG 后，把 `ACAN Studio.app` 拖到 `Applications` 文件夹即可。

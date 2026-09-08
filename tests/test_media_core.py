@@ -1,6 +1,7 @@
 import unittest
 
 from acan_studio.core.media import (
+    build_mp3_to_wav_command,
     calculate_target_bitrates,
     classify_content_type,
     detect_platform,
@@ -13,6 +14,19 @@ from acan_studio.core.media import (
 
 
 class MediaCoreTests(unittest.TestCase):
+    def test_mp3_to_wav_uses_compatible_pcm_without_changing_layout(self):
+        command = build_mp3_to_wav_command(
+            "/tools/ffmpeg",
+            "/input/My Song.mp3",
+            "/output/My Song.wav",
+        )
+        self.assertEqual(command[0], "/tools/ffmpeg")
+        self.assertEqual(command[-1], "/output/My Song.wav")
+        self.assertEqual(command[command.index("-c:a") + 1], "pcm_s16le")
+        self.assertEqual(command[command.index("-map") + 1], "0:a:0")
+        self.assertNotIn("-ar", command)
+        self.assertNotIn("-ac", command)
+
     def test_extract_first_url_removes_share_text_punctuation(self):
         text = "复制打开： https://youtu.be/example?id=1。谢谢"
         self.assertEqual(extract_first_url(text), "https://youtu.be/example?id=1")
